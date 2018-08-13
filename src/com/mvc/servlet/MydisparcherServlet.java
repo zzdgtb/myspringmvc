@@ -1,4 +1,4 @@
-package com.mvc.controller;
+package com.mvc.servlet;
 
 import java.io.File;
 import java.io.IOException;
