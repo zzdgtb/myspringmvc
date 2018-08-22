@@ -1,10 +1,12 @@
 package com.mvc.service;
 
-import com.mvc.annotation.MyService;
+import com.mvc.annotation.ioc.MyService;
+import com.mvc.annotation.mypointcut.MyPointCut;
 
 @MyService
-public interface LoginService {   
+public interface LoginService { 
 	
-public void validate(String id,String pwd);
+	@MyPointCut
+	public void validate(String id,String pwd);
  
 }

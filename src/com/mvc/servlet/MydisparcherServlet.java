@@ -26,11 +26,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mvc.annotation.MyService;
-import com.mvc.annotation.Myautowrited;
-import com.mvc.annotation.Mycontroller;
-import com.mvc.annotation.Myparamer;
-import com.mvc.annotation.RequestMapping;
+import com.mvc.annotation.aop.MyAspect;
+import com.mvc.annotation.ioc.MyService;
+import com.mvc.annotation.ioc.Myautowrited;
+import com.mvc.annotation.mvc.Mycontroller;
+import com.mvc.annotation.mvc.Myparamer;
+import com.mvc.annotation.mvc.RequestMapping;
+import com.mvc.proxy.SimpleProxyFactory;
 
 
 /**
@@ -49,6 +51,8 @@ public class MydisparcherServlet extends HttpServlet {
 	private static Map<String,Handle> HandleMapping=new HashMap<String,Handle>();
 	
 	private static List<String> classnamelist= new ArrayList<String>();
+	
+	private static List<Object> aspectClassList= new ArrayList<Object>();
 	
 	private Properties properties=new Properties();
 	
@@ -125,12 +129,10 @@ public class MydisparcherServlet extends HttpServlet {
 		
 		//包扫描
 		pacagescan(properties.getProperty("package.scan"));
-		//初始化spring容器
-		try {
-			initIoc();
-		} catch (Exception e) {
-			log.info(e.getMessage());
-		}
+		
+		//初始化spring容器		
+		initIoc();
+		
 		
 		//自动注入
 		aotuwirted();
@@ -258,11 +260,39 @@ public class MydisparcherServlet extends HttpServlet {
 		}
 	}
 
-	private void initIoc() throws Exception {
+	private void initIoc() throws ServletException  {
+		
+		//初始化IOC之前先初始化Aop,因为IOC容器存代理对象
+		for(String classname:classnamelist){
+			Class clazz;
+			try {
+				clazz = Class.forName(classname);
+				
+				if(clazz.isAnnotationPresent(MyAspect.class)){
+					
+					aspectClassList.add(clazz.newInstance());
+				}
+			} catch (ClassNotFoundException e) {
+				
+				e.printStackTrace();
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 		for(String classname:classnamelist){
 			try {
 				Class clazz=Class.forName(classname);
 				if(clazz.isAnnotationPresent(Mycontroller.class)){
+					
+					Ioc.put(LowerFirstchar(clazz.getSimpleName()), clazz.newInstance());
+				}
+				
+                 if(clazz.isAnnotationPresent(MyAspect.class)){
 					
 					Ioc.put(LowerFirstchar(clazz.getSimpleName()), clazz.newInstance());
 				}
@@ -280,12 +310,12 @@ public class MydisparcherServlet extends HttpServlet {
 					if(clazz.isInterface()){
 						Set<Class<?>> set= getAllSubclassByInterface(classnamelist,clazz);
 						if(set.size()==0){
-							throw new Exception("one interface have no subclass");
+							throw new ServletException("one interface have no subclass");
 						}
 						if(set.size()>1){
-							throw new Exception("one interface have more than one subclass");
+							throw new ServletException("one interface have more than one subclass");
 						}
-						Ioc.put(beanname, set.iterator().next().newInstance());
+						Ioc.put(beanname, SimpleProxyFactory.newInstance(set.iterator().next().newInstance(), aspectClassList.get(0)));
 					}
 					
 				}

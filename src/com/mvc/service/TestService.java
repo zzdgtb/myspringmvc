@@ -1,6 +1,6 @@
 package com.mvc.service;
 
-import com.mvc.annotation.MyService;
+import com.mvc.annotation.ioc.MyService;
 
 @MyService
 public interface TestService {   

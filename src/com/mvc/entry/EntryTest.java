@@ -1,6 +1,6 @@
 package com.mvc.entry;
 
-import com.mvc.annotation.MyCompant;
+import com.mvc.annotation.ioc.MyCompant;
 
 @MyCompant
 public class EntryTest {

@@ -1,7 +1,7 @@
 package com.mvc.service;
 
-import com.mvc.annotation.MyCompant;
-import com.mvc.annotation.Myautowrited;
+import com.mvc.annotation.ioc.MyCompant;
+import com.mvc.annotation.ioc.Myautowrited;
 import com.mvc.entry.EntryTest;
 @MyCompant
 public class TestServiceImpl implements TestService {

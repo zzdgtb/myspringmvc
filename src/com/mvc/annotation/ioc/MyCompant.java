@@ -1,4 +1,4 @@
-package com.mvc.annotation;
+package com.mvc.annotation.ioc;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -6,11 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.TYPE,ElementType.METHOD})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface RequestMapping {
-	
-String value();
-
+public @interface MyCompant {
+String value() default "";
 }

@@ -3,10 +3,10 @@ package com.mvc.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.mvc.annotation.Myautowrited;
-import com.mvc.annotation.Mycontroller;
-import com.mvc.annotation.Myparamer;
-import com.mvc.annotation.RequestMapping;
+import com.mvc.annotation.ioc.Myautowrited;
+import com.mvc.annotation.mvc.Mycontroller;
+import com.mvc.annotation.mvc.Myparamer;
+import com.mvc.annotation.mvc.RequestMapping;
 import com.mvc.service.LoginService;
 
 @Mycontroller
